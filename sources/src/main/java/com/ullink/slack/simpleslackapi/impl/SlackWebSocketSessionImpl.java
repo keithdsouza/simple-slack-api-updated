@@ -236,6 +236,10 @@ class SlackWebSocketSessionImpl extends AbstractSlackSessionImpl implements Slac
                 case USER_TYPING:
                     dispatchImpl((UserTyping) event, userTypingListener);
                     break;
+                case FILE_CREATED:
+                case FILE_SHARED:
+                case FILE_UNSHARED:
+                    LOGGER.info("File type event to handle " + event.getEventType() + " not handled: " + ((UnknownEvent)event).getJsonPayload());
                 default:
                     LOGGER.debug("event of type " + event.getEventType() + " not handled: " + ((UnknownEvent)event).getJsonPayload());
             }

@@ -23,5 +23,8 @@ public enum SlackEventType {
     PIN_REMOVED,
     USER_TYPING,
     UNKNOWN,
-    SLACK_DISCONNECTED;
+    SLACK_DISCONNECTED,
+    FILE_UNSHARED,
+    FILE_SHARED,
+    FILE_CREATED
 }

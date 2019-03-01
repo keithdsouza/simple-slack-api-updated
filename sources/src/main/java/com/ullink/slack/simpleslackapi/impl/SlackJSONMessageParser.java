@@ -8,9 +8,7 @@ import com.ullink.slack.simpleslackapi.events.*;
 import com.ullink.slack.simpleslackapi.events.userchange.SlackTeamJoin;
 import com.ullink.slack.simpleslackapi.events.userchange.SlackUserChange;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -246,6 +244,18 @@ class SlackJSONMessageParser {
         SlackMessagePosted message = new SlackMessagePosted(text, null, user, channel, ts, null, obj.toString(), SlackMessagePosted.MessageSubType.fromCode(subtype), threadTimestamp);
         message.setReactions(reacs);
         message.setAttachments(attachments);
+
+        //parse the files from a email upload because it's not treated as regular file upload event
+        if(obj.has("files")) {
+            JsonArray fileArray = obj.getAsJsonArray("files");
+            List<SlackFile> files = new ArrayList<>();
+            for (JsonElement f : fileArray) {
+                SlackFile file = new SlackFile();
+                parseSlackFileFromRaw(f.getAsJsonObject(), file);
+                files.add(file);
+            }
+            message.setSlackFiles(files);
+        }
         return message;
     }
 
@@ -256,8 +266,11 @@ class SlackJSONMessageParser {
         file.setId(GsonHelper.getStringOrNull(rawFile.get("id")));
         file.setName(GsonHelper.getStringOrNull(rawFile.get("name")));
         file.setTitle(GsonHelper.getStringOrNull(rawFile.get("title")));
-        file.setMimetype(GsonHelper.getStringOrNull(rawFile.get("mimetype")));
-        file.setFiletype(GsonHelper.getStringOrNull(rawFile.get("filetype")));
+        file.setPlainText(GsonHelper.getStringOrNull(rawFile.get("plain_text")));
+        file.setPreview(GsonHelper.getStringOrNull(rawFile.get("preview")));
+        file.setPreviewPlainText(GsonHelper.getStringOrNull(rawFile.get("preview_plain_text")));
+        file.setMimeType(GsonHelper.getStringOrNull(rawFile.get("mimetype")));
+        file.setFileType(GsonHelper.getStringOrNull(rawFile.get("filetype")));
         file.setUrl(GsonHelper.getStringOrNull(rawFile.get("url")));
         file.setUrlDownload(GsonHelper.getStringOrNull(rawFile.get("url_download")));
         file.setUrlPrivate(GsonHelper.getStringOrNull(rawFile.get("url_private")));
@@ -306,7 +319,7 @@ class SlackJSONMessageParser {
 
         String threadTimestamp = GsonHelper.getStringOrNull(obj.get("thread_ts"));
 
-        return new SlackMessagePosted(text, user, user, channel, ts,file,obj.toString(), SlackMessagePosted.MessageSubType.fromCode(subtype), threadTimestamp);
+        return new SlackMessagePosted(text, user, user, channel, ts, Collections.singletonList(file), obj.toString(), SlackMessagePosted.MessageSubType.fromCode(subtype), threadTimestamp);
     }
 
     private static SlackChannel parseChannelDescription(JsonObject channelJSONObject) {

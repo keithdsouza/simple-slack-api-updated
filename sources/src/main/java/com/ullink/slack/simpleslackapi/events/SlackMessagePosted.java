@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NonNull;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 //TODO: even bother with NonNull in here?
@@ -24,10 +25,10 @@ public class SlackMessagePosted implements SlackEvent {
     @NonNull
     private MessageSubType msgSubType;
     private String threadTimestamp;
-    private SlackFile slackFile;
+    protected List<SlackFile> slackFiles;
     private String jsonSource;
     private Map<String, Integer> reactions;
-    private ArrayList<SlackAttachment> attachments;
+    private List<SlackAttachment> attachments;
 
     public SlackMessagePosted(String messageContent, SlackBot bot, SlackUser user, SlackChannel channel, String timestamp, MessageSubType msgSubType) {
         this.channel = channel;
@@ -38,14 +39,14 @@ public class SlackMessagePosted implements SlackEvent {
         this.msgSubType = msgSubType;
     }
 
-    public SlackMessagePosted(String messageContent, SlackBot bot, SlackUser user, SlackChannel channel, String timestamp, SlackFile slackFile, String jsonSource, MessageSubType msgSubType, String threadTimestamp) {
+    public SlackMessagePosted(String messageContent, SlackBot bot, SlackUser user, SlackChannel channel, String timestamp, List<SlackFile> slackFiles, String jsonSource, MessageSubType msgSubType, String threadTimestamp) {
         this.channel = channel;
         this.messageContent = messageContent;
         this.user = user;
         this.bot = bot;
         this.timestamp = timestamp;
         this.jsonSource = jsonSource;
-        this.slackFile = slackFile;
+        this.slackFiles = slackFiles;
         this.msgSubType = msgSubType;
         this.threadTimestamp = threadTimestamp;
     }
@@ -59,8 +60,8 @@ public class SlackMessagePosted implements SlackEvent {
         return jsonSource;
     }
 
-    public SlackFile getSlackFile() {
-        return slackFile;
+    public List<SlackFile> getSlackFiles() {
+        return slackFiles;
     }
 
 
@@ -113,7 +114,7 @@ public class SlackMessagePosted implements SlackEvent {
         return timestamp;
     }
 
-    public ArrayList<SlackAttachment> getAttachments() {
+    public List<SlackAttachment> getAttachments() {
         return attachments;
     }
 
