@@ -9,14 +9,14 @@
       <profile default="true" name="Default" enabled="true" />
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="simpleslackapi-lib_main" target="1.7" />
-      <module name="simpleslackapi-lib_test" target="1.7" />
-      <module name="simpleslackapi-samples-actions_main" target="1.7" />
-      <module name="simpleslackapi-samples-actions_test" target="1.7" />
-      <module name="simpleslackapi-samples-connection_main" target="1.7" />
-      <module name="simpleslackapi-samples-connection_test" target="1.7" />
-      <module name="simpleslackapi-samples-events_main" target="1.7" />
-      <module name="simpleslackapi-samples-events_test" target="1.7" />
+      <module name="simpleslackapi-lib_main" target="1.8" />
+      <module name="simpleslackapi-lib_test" target="1.8" />
+      <module name="simpleslackapi-samples-actions_main" target="1.8" />
+      <module name="simpleslackapi-samples-actions_test" target="1.8" />
+      <module name="simpleslackapi-samples-connection_main" target="1.8" />
+      <module name="simpleslackapi-samples-connection_test" target="1.8" />
+      <module name="simpleslackapi-samples-events_main" target="1.8" />
+      <module name="simpleslackapi-samples-events_test" target="1.8" />
       <module name="simpleslackapi_main" target="1.8" />
       <module name="simpleslackapi_test" target="1.8" />
     </bytecodeTargetLevel>
@@ -24,9 +24,6 @@
   <component name="CopyrightManager" default="" />
   <component name="Encoding">
     <file url="PROJECT" charset="UTF-8" />
-  </component>
-  <component name="EntryPointsManager">
-    <entry_points version="2.0" />
   </component>
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
