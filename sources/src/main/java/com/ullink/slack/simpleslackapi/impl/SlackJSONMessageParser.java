@@ -231,13 +231,21 @@ class SlackJSONMessageParser {
         SlackUser user = slackSession.findUserById(userId);
         String threadTimestamp = GsonHelper.getStringOrNull(obj.get("thread_ts"));
         if (user == null) {
-
             SlackIntegration integration = slackSession.findIntegrationById(userId);
             if (integration == null) {
-                throw new IllegalStateException("unknown user id: " + userId);
+                JsonObject element = GsonHelper.getJsonObjectOrNull(obj.get("comment"));
+                if(element == null) {
+                    System.out.println("JSON is " + obj.toString());
+                    throw new IllegalStateException("unknown user id: " + userId);
+                }
+                else {
+                    userId = GsonHelper.getStringOrNull(element.get("userId"));
+                    user = slackSession.findUserById(userId);
+                }
             }
-            user = new SlackIntegrationUser(integration);
-
+            else {
+                user = new SlackIntegrationUser(integration);
+            }
         }
         Map<String, Integer> reacs = extractReactionsFromMessageJSON(obj);
         ArrayList<SlackAttachment> attachments = extractAttachmentsFromMessageJSON(obj);
@@ -451,7 +459,7 @@ class SlackJSONMessageParser {
         if (rawReactions != null) {
             for (JsonElement element : rawReactions) {
                 JsonObject reaction = element.getAsJsonObject();
-                String emojiCode = reaction.get("name").toString();
+                String emojiCode = reaction.get("name").getAsString();
                 Integer count = reaction.get("count").getAsInt();
                 reacs.put(emojiCode, count);
             }
@@ -462,7 +470,7 @@ class SlackJSONMessageParser {
     public static Map<String, String> extractEmojisFromMessageJSON(JsonObject emojiObject) {
         Map<String, String> emojis = new HashMap<>();
         for (Map.Entry<String,JsonElement> entry : emojiObject.entrySet()) {
-            emojis.put(entry.getKey().toString(), entry.getValue().getAsString());
+            emojis.put(entry.getKey(), entry.getValue().getAsString());
         }
         return emojis;
     }
