@@ -115,6 +115,23 @@ public class ChannelHistoryModuleImpl implements ChannelHistoryModule {
         }
     }
 
+    @Override
+    public List<SlackMessagePosted> fetchHistoryOfChannel(String channelId, String timestamp) {
+        Map<String, String> params = new HashMap<>();
+        params.put("channel", channelId);
+        params.put("latest", timestamp);
+        params.put("count", String.valueOf(DEFAULT_HISTORY_FETCH_SIZE));
+        SlackChannel channel = session.findChannelById(channelId);
+        switch (channel.getType()) {
+            case INSTANT_MESSAGING:
+                return fetchHistoryOfChannel(params, FETCH_IM_HISTORY_COMMAND, MessageSubTypeFilter.USERS_AND_INTERNAL_MESSAGES.getRetainedSubtypes());
+            case PRIVATE_GROUP:
+                return fetchHistoryOfChannel(params, FETCH_GROUP_HISTORY_COMMAND, MessageSubTypeFilter.USERS_AND_INTERNAL_MESSAGES.getRetainedSubtypes());
+            default:
+                return fetchHistoryOfChannel(params, FETCH_CHANNEL_HISTORY_COMMAND, MessageSubTypeFilter.USERS_AND_INTERNAL_MESSAGES.getRetainedSubtypes());
+        }
+    }
+
     private List<SlackMessagePosted> fetchHistoryOfChannel(Map<String, String> params, String command, Set<String> retainedMessageSubtypes) {
         SlackMessageHandle<GenericSlackReply> handle = session.postGenericSlackCommand(params, command);
         GenericSlackReply replyEv = handle.getReply();
